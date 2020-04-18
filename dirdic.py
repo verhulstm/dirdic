@@ -1,5 +1,8 @@
 import os
+import json
 from functools import reduce
+
+from ruamel import yaml
 
 class Dirdict:
     def __init__(self, path):
@@ -51,6 +54,7 @@ class Dirdict:
             filename=os.path.basename(p)
             filenames.append(filename)
         print(filenames)
+        return filenames
 
     def alldirnames(self):
         dirnames = []
@@ -69,6 +73,24 @@ class Dirdict:
     def dir(self):
         print(self.__directorystructure(self.path))
 
+    def dirjson(self):
+        json_string = json.dumps(self.__directorystructure(self.path))
+        json_string = json_string.replace("None",'\"None\"')
+        json_string = json_string.replace("null", '\"None\"')
+        print(json_string)
+        return json_string
+
+    def diryaml(self):
+        dic = json.loads(self.dirjson())
+        yaml_string = yaml.dump(dic, Dumper= yaml.RoundTripDumper)
+        print(yaml_string)
+
+    def exists(self, filename):
+        if filename in self.allfilenames():
+            print("True")
+        else:
+            print("False")
+
 data = Dirdict("sample")
 data.allfilepaths()
 data.alldirpaths()
@@ -76,4 +98,7 @@ data.allfilenames()
 data.alldirnames()
 data.size()
 data.dir()
+data.dirjson()
+data.diryaml()
 data.getcontent("/Users/mike/Desktop/dirdic/sample/b/2.txt")
+data.exists("2.txt")

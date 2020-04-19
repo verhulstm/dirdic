@@ -1,8 +1,10 @@
 import os
 import json
+import hashlib
 from functools import reduce
 
 from ruamel import yaml
+
 
 class Dirdict:
     def __init__(self, path):
@@ -47,11 +49,12 @@ class Dirdict:
 
     def alldirpaths(self):
         print(self.__walk(self.path)[0])
+        return self.__walk(self.path)[0]
 
     def allfilenames(self):
         filenames = []
         for p in self.__walk(self.path)[1]:
-            filename=os.path.basename(p)
+            filename = os.path.basename(p)
             filenames.append(filename)
         print(filenames)
         return filenames
@@ -59,37 +62,69 @@ class Dirdict:
     def alldirnames(self):
         dirnames = []
         for d in self.__walk(self.path)[0]:
-            dirname=os.path.basename(d)
+            dirname = os.path.basename(d)
             dirnames.append(dirname)
         print(dirnames)
+        return dirnames
 
     def getcontent(self, path):
         if os.path.isfile(path):
             f = open(path, "r")
             print(f.read())
         else:
-            print ("File not exist")
+            print("File not exist")
+
+    def countdirs(self):
+        print(len(self.alldirnames()))
+
+    def countfiles(self):
+        print(len(self.allfilenames()))
 
     def dir(self):
         print(self.__directorystructure(self.path))
 
     def dirjson(self):
         json_string = json.dumps(self.__directorystructure(self.path))
-        json_string = json_string.replace("None",'\"None\"')
-        json_string = json_string.replace("null", '\"None\"')
+        json_string = json_string.replace("None", '"None"')
+        json_string = json_string.replace("null", '"None"')
         print(json_string)
         return json_string
 
     def diryaml(self):
         dic = json.loads(self.dirjson())
-        yaml_string = yaml.dump(dic, Dumper= yaml.RoundTripDumper)
+        yaml_string = yaml.dump(dic, Dumper=yaml.RoundTripDumper)
         print(yaml_string)
 
-    def exists(self, filename):
+    def fileexists(self, filename):
         if filename in self.allfilenames():
             print("True")
         else:
             print("False")
+
+    def pathtofile(self, filename):
+        files = self.__walk(self.path)[1]
+        files_dic = {}
+        for file in files:
+            files_dic[os.path.basename(file)] = file
+        print(files_dic[filename])
+        return os.path.abspath(files_dic[filename])
+
+    def hashcontent(self, path):
+        if os.path.isfile(path):
+            f = open(path, "r")
+            print(hashlib.sha256(f.read().encode('utf-8')).hexdigest())
+            return hashlib.sha256(f.read().encode('utf-8')).hexdigest()
+        else:
+            print("File not exist")
+
+    def getline(self, path, index):
+        if os.path.isfile(path):
+            f = open(path, "r")
+            lines = f.readlines()
+            print(lines[index])
+            return lines[index]
+        else:
+            print("File not exist")
 
 data = Dirdict("sample")
 data.allfilepaths()
@@ -97,8 +132,13 @@ data.alldirpaths()
 data.allfilenames()
 data.alldirnames()
 data.size()
+data.countfiles()
+data.countdirs()
 data.dir()
 data.dirjson()
 data.diryaml()
-data.getcontent("/Users/mike/Desktop/dirdic/sample/b/2.txt")
-data.exists("2.txt")
+data.fileexists("0.txt")
+data.pathtofile("0.txt")
+data.getcontent("/Users/mike/Desktop/dirdic/sample/a/0.txt")
+data.hashcontent("/Users/mike/Desktop/dirdic/sample/a/0.txt")
+data.getline("/Users/mike/Desktop/dirdic/sample/a/lines.txt", 1)

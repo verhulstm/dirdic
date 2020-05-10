@@ -139,9 +139,10 @@ class Dirdict:
             exts.append(file_extension)
         print(set(exts))
         return set(exts)
-            
 
-data = Dirdict("sample")
+
+
+data = Dirdict("/home/user/Desktop/sdm/files/docs/name_based/")
 data.allfilepaths()
 data.alldirpaths()
 data.allfilenames()
@@ -152,8 +153,9 @@ data.countdirs()
 data.dir()
 data.dirjson()
 data.diryaml()
-data.fileexists("0.txt")
-data.pathtofile("0.txt")
-data.getcontent("/Users/mike/Desktop/dirdic/sample/a/0.txt")
-data.hashcontent("/Users/mike/Desktop/dirdic/sample/a/0.txt")
-data.getline("/Users/mike/Desktop/dirdic/sample/a/lines.txt", 1)
+data.setoffileexts()
+#data.fileexists("filename")
+#data.pathtofile("filename")
+#data.getcontent("path")
+#data.hashcontent("path")
+#data.getline("path", 1)

@@ -132,7 +132,15 @@ class Dirdict:
         else:
             print("File not exist")
 
+    def setoffileexts(self):
+        exts = []
+        for name in self.allfilenames():
+            filename, file_extension = os.path.splitext(name)
+            exts.append(file_extension)
+        print(set(exts))
+        return set(exts)
             
+
 data = Dirdict("sample")
 data.allfilepaths()
 data.alldirpaths()

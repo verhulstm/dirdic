@@ -11,6 +11,14 @@ class Dirdict:
         self.path = os.path.abspath(path)
 
     def __directorystructure(self, rootdir):
+        def __remove_none(obj):
+            result = {}
+            for key, value in obj.items():
+                if value == None:
+                    result[key] = "None"
+                else:
+                    result[key] = value
+            return result
         dir = {}
         rootdir = rootdir.rstrip(os.sep)
         start = rootdir.rfind(os.sep) + 1
@@ -18,7 +26,7 @@ class Dirdict:
             folders = path[start:].split(os.sep)
             subdir = dict.fromkeys(files)
             parent = reduce(dict.get, folders[:-1], dir)
-            parent[folders[-1]] = subdir
+            parent[folders[-1]] = __remove_none(subdir)
         return dir
 
     def __walk(self, path):
@@ -85,8 +93,6 @@ class Dirdict:
 
     def dirjson(self):
         json_string = json.dumps(self.__directorystructure(self.path))
-        json_string = json_string.replace("None", '"None"')
-        json_string = json_string.replace("null", '"None"')
         print(json_string)
         return json_string
 
@@ -126,6 +132,7 @@ class Dirdict:
         else:
             print("File not exist")
 
+            
 data = Dirdict("sample")
 data.allfilepaths()
 data.alldirpaths()
